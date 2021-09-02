@@ -1,13 +1,22 @@
-xplr plugin template
-====================
+command-mode.xplr
+=================
 
-Use this template to [write your own xplr plugin](https://arijitbasu.in/xplr/en/writing-plugins.html).
+This plugin acts like a library to help you define custom commands to perform
+actions.
 
 
-Requirements
-------------
+Why
+---
 
-- Some tool
+[xplr](https://github.com/sayanarijit/xplr) has no concept of commands. By
+default, it requires us to map keys directly to a list of
+[messages](https://arijitbasu.in/xplr/en/message.html).
+While for the most part this works just fine, sometimes it gets difficult to
+remember which action is mapped to which key inside which mode. Also, not
+every action needs to be bound to some key.
+
+In short, sometimes, it's much more convenient to define and enter commands to
+perform certain actions than trying to remember key bindings.
 
 
 Installation
@@ -26,26 +35,92 @@ Installation
   ```bash
   mkdir -p ~/.config/xplr/plugins
 
-  git clone https://github.com/me/{plugin}.xplr ~/.config/xplr/plugins/{plugin}
+  git clone https://github.com/sayanarijit/command-mode.xplr ~/.config/xplr/plugins/command-mode
   ```
 
 - Require the module in `~/.config/xplr/init.lua`
 
   ```lua
-  require("{plugin}").setup()
+  require("command-mode").setup()
   
   -- Or
   
-  require("{plugin}").setup{
-    mode = "action",
+  require("command-mode").setup{
+    mode = "default",
     key = ":",
+    remap_action_mode_to = {
+      mode = "default",
+      key = "a",
+    }
   }
 
-  -- Type `::` and enjoy.
+  -- Type `:` to enter command mode
   ```
+
+
+Usage
+-----
+
+Examples takes from
+[here](https://arijitbasu.in/xplr/en/message.html#example-using-lua-function-calls)
+and
+[here](https://arijitbasu.in/xplr/en/message.html#example-using-environment-variables-and-pipes).
+
+```lua
+-- Assuming you have installed and setup the plugin
+
+local cmd = xplr.fn.custom.command_mode.cmd
+local map = xplr.fn.custom.command_mode.map
+
+-- Type `:hello-lua` and press enter to know your location
+cmd("hello-lua", "Enter name and know location")(function(app)
+  print("What's your name?")
+
+  local name = io.read()
+  local greeting = "Hello " .. name .. "!"
+  local message = greeting .. " You are inside " .. app.pwd
+
+  return {
+    { LogSuccess = message },
+  }
+end)
+
+-- Type `:hello-bash` and press enter to know your location
+cmd("hello-bash", "Enter name and know location")(function(app)
+  return {
+    {
+      BashExec = [===[
+        echo "What's your name?"
+
+        read name
+        greeting="Hello $name!"
+        message="$greeting You are inside $PWD"
+      
+        echo LogSuccess: '"'$message'"' >> "${XPLR_PIPE_MSG_IN:?}"
+      ]===],
+    },
+  }
+end)
+
+-- map `h` to command `hello-lua`
+map("default", "h", "hello-lua")
+
+-- map `H` to command `hello-bash`
+map("default", "H", "hello-bash")
+```
 
 
 Features
 --------
 
-- Some cool feature
+- Command completion
+- Command history navigation
+- Press `?` to list commands
+- Press `!` to spawn shell
+- Easily map keys to commands
+
+
+TODO
+----
+
+- [ ] Fuzzy search commands
