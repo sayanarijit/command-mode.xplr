@@ -70,6 +70,7 @@ and
 -- Assuming you have installed and setup the plugin
 
 local cmd = xplr.fn.custom.command_mode.cmd
+local silent_cmd = xplr.fn.custom.command_mode.silent_cmd
 local map = xplr.fn.custom.command_mode.map
 
 -- Type `:hello-lua` and press enter to know your location
@@ -86,7 +87,7 @@ cmd("hello-lua", "Enter name and know location")(function(app)
 end)
 
 -- Type `:hello-bash` and press enter to know your location
-cmd("hello-bash", "Enter name and know location")(function(app)
+silent_cmd("hello-bash", "Enter name and know location")(function(app)
   return {
     {
       BashExec = [===[
@@ -108,6 +109,9 @@ map("default", "h", "hello-lua")
 -- map `H` to command `hello-bash`
 map("default", "H", "hello-bash")
 ```
+
+**NOTE:** To define non-interactive commands, use
+`xplr.fn.custom.command_mode.silent_cmd` to avoid the flickering of screen.
 
 
 Features
