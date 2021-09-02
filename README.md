@@ -8,15 +8,10 @@ actions.
 Why
 ---
 
-[xplr](https://github.com/sayanarijit/xplr) has no concept of commands. By
-default, it requires us to map keys directly to a list of
-[messages](https://arijitbasu.in/xplr/en/message.html).
-While for the most part this works just fine, sometimes it gets difficult to
-remember which action is mapped to which key inside which mode. Also, not
-every action needs to be bound to some key.
+[xplr](https://github.com/sayanarijit/xplr) has no concept of commands. By default, it requires us to map keys directly to a list of [messages](https://arijitbasu.in/xplr/en/message.html).
+While for the most part this works just fine, sometimes it gets difficult to remember which action is mapped to which key inside which mode. Also, not every action needs to be bound to some key.
 
-In short, sometimes, it's much more convenient to define and enter commands to
-perform certain actions than trying to remember key bindings.
+In short, sometimes, it's much more convenient to define and enter commands to perform certain actions than trying to remember key bindings.
 
 
 Installation
@@ -61,10 +56,7 @@ Installation
 Usage
 -----
 
-Examples takes from
-[here](https://arijitbasu.in/xplr/en/message.html#example-using-lua-function-calls)
-and
-[here](https://arijitbasu.in/xplr/en/message.html#example-using-environment-variables-and-pipes).
+Examples takes from [here](https://arijitbasu.in/xplr/en/message.html#example-using-lua-function-calls) and [here](https://arijitbasu.in/xplr/en/message.html#example-using-environment-variables-and-pipes).
 
 ```lua
 -- Assuming you have installed and setup the plugin
@@ -110,8 +102,7 @@ map("default", "h", "hello-lua")
 map("default", "H", "hello-bash")
 ```
 
-**NOTE:** To define non-interactive commands, use
-`xplr.fn.custom.command_mode.silent_cmd` to avoid the flickering of screen.
+**NOTE:** To define non-interactive commands, use `xplr.fn.custom.command_mode.silent_cmd` to avoid the flickering of screen.
 
 
 Features
