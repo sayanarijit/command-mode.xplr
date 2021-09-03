@@ -56,7 +56,7 @@ Installation
 Usage
 -----
 
-Examples takes from [here](https://arijitbasu.in/xplr/en/message.html#example-using-lua-function-calls) and [here](https://arijitbasu.in/xplr/en/message.html#example-using-environment-variables-and-pipes).
+Examples are taken from [here](https://arijitbasu.in/xplr/en/message.html#example-using-lua-function-calls) and [here](https://arijitbasu.in/xplr/en/message.html#example-using-environment-variables-and-pipes).
 
 ```lua
 -- Assuming you have installed and setup the plugin
