@@ -45,7 +45,7 @@ Installation
     key = ":",
     remap_action_mode_to = {
       mode = "default",
-      key = "a",
+      key = ";",
     }
   }
 

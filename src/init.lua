@@ -10,7 +10,7 @@ local function setup(args)
   args.mode = args.mode or "default"
   args.key = args.key or ":"
   args.remap_action_mode_to = args.remap_action_mode_to
-    or { mode = "default", key = "a" }
+    or { mode = "default", key = ";" }
 
   xplr.config.modes.builtin[args.remap_action_mode_to.mode].key_bindings.on_key[args.remap_action_mode_to.key] =
     xplr.config.modes.builtin.default.key_bindings.on_key[":"]
