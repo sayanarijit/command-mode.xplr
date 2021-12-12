@@ -71,40 +71,11 @@ local function setup(args)
             { CallLua = "custom.command_mode.list" },
           },
         },
-        ["-"] = {
-          messages = {
-            "BufferInputFromKey",
-          },
-        },
-        ["ctrl-c"] = {
-          help = "terminate",
-          messages = { "Terminate" },
-        },
-        backspace = {
-          messages = { "RemoveInputBufferLastCharacter" },
-        },
-        ["ctrl-u"] = {
-          messages = {
-            { SetInputBuffer = "" },
-          },
-        },
-        ["ctrl-w"] = {
-          messages = { "RemoveInputBufferLastWord" },
-        },
-      },
-
-      on_alphabet = {
-        messages = {
-          "BufferInputFromKey",
-        },
-      },
-      on_number = {
-        messages = {
-          "BufferInputFromKey",
-        },
       },
       default = {
-        messages = {},
+        messages = {
+          "UpdateInputBufferFromKey",
+        },
       },
     },
   }
