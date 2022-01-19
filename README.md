@@ -1,28 +1,28 @@
-command-mode.xplr
-=================
+# command-mode.xplr
 
 This plugin acts like a library to help you define custom commands to perform
 actions.
 
-
-Why
----
+## Why
 
 [xplr](https://github.com/sayanarijit/xplr) has no concept of commands. By default, it requires us to map keys directly to a list of [messages](https://arijitbasu.in/xplr/en/message.html).
 While for the most part this works just fine, sometimes it gets difficult to remember which action is mapped to which key inside which mode. Also, not every action needs to be bound to some key.
 
 In short, sometimes, it's much more convenient to define and enter commands to perform certain actions than trying to remember key bindings.
 
-
-Installation
-------------
+## Installation
 
 ### Install manually
 
 - Add the following line in `~/.config/xplr/init.lua`
 
   ```lua
-  package.path = os.getenv("HOME") .. '/.config/xplr/plugins/?/src/init.lua'
+  local home = os.getenv("HOME")
+  package.path = home
+  .. "/.config/xplr/plugins/?/init.lua;"
+  .. home
+  .. "/.config/xplr/plugins/?.lua;"
+  .. package.path
   ```
 
 - Clone the plugin
@@ -37,9 +37,9 @@ Installation
 
   ```lua
   require("command-mode").setup()
-  
+
   -- Or
-  
+
   require("command-mode").setup{
     mode = "default",
     key = ":",
@@ -52,9 +52,7 @@ Installation
   -- Type `:` to enter command mode
   ```
 
-
-Usage
------
+## Usage
 
 Examples are taken from [here](https://arijitbasu.in/xplr/en/message.html#example-using-lua-function-calls) and [here](https://arijitbasu.in/xplr/en/message.html#example-using-environment-variables-and-pipes).
 
@@ -88,7 +86,7 @@ silent_cmd("hello-bash", "Enter name and know location")(function(app)
         read name
         greeting="Hello $name!"
         message="$greeting You are inside $PWD"
-      
+
         echo LogSuccess: '"'$message'"' >> "${XPLR_PIPE_MSG_IN:?}"
       ]===],
     },
@@ -104,9 +102,7 @@ map("default", "H", "hello-bash")
 
 **NOTE:** To define non-interactive commands, use `xplr.fn.custom.command_mode.silent_cmd` to avoid the flickering of screen.
 
-
-Features
---------
+## Features
 
 - Command completion
 - Command history navigation
@@ -114,8 +110,6 @@ Features
 - Press `!` to spawn shell
 - Easily map keys to commands
 
-
-TODO
-----
+## TODO
 
 - [ ] Fuzzy search commands
