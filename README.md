@@ -61,6 +61,9 @@ Examples are taken from [here](https://arijitbasu.in/xplr/en/message.html#exampl
 
 local m = require("command-mode")
 
+-- Setup with default settings
+m.setup()
+
 -- Type `:hello-lua` and press enter to know your location
 m.cmd("hello-lua", "Enter name and know location")(function(app)
   print("What's your name?")
