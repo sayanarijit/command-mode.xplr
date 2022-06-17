@@ -101,7 +101,7 @@ m.map("default", "h", "hello-lua")
 m.map("default", "H", "hello-bash")
 ```
 
-**NOTE:** To define non-interactive commands, use `xplr.fn.custom.command_mode.silent_cmd` to avoid the flickering of screen.
+**NOTE:** To define non-interactive commands, use `silent_cmd` to avoid the flickering of screen.
 
 ## Features
 
