@@ -1,9 +1,45 @@
+---@diagnostic disable
+local xplr = xplr
+---@diagnostic enable
+
+local COMMANDS = {}
+local COMMAND_HISTORY = {}
+local CURR_CMD_INDEX = 1
+
+local function map(mode, key, name)
+  local cmd = COMMANDS[name]
+  if cmd then
+    local messages = { "PopMode" }
+
+    if cmd.silent then
+      table.insert(messages, { CallLuaSilently = "custom.command_mode.fn." .. name })
+    else
+      table.insert(messages, { CallLua = "custom.command_mode.fn." .. name })
+    end
+
+    xplr.config.modes.builtin[mode].key_bindings.on_key[key] = {
+      help = cmd.help,
+      messages = messages,
+    }
+  end
+end
+
+local function cmd(name, help)
+  return function(fn)
+    xplr.fn.custom.command_mode.fn[name] = fn
+    COMMANDS[name] = { help = help, fn = fn, silent = false }
+  end
+end
+
+local function silent_cmd(name, help)
+  return function(fn)
+    xplr.fn.custom.command_mode.fn[name] = fn
+    COMMANDS[name] = { help = help, fn = fn, silent = true }
+  end
+end
+
 local function setup(args)
   local xplr = xplr
-
-  local COMMANDS = {}
-  local COMMAND_HISTORY = {}
-  local CURR_CMD_INDEX = 1
 
   -- Parse args
   args = args or {}
@@ -80,24 +116,12 @@ local function setup(args)
     },
   }
 
-  xplr.fn.custom.command_mode = {}
-  xplr.fn.custom.command_mode.fn = {}
-
-  -- Define an interactive command
-  xplr.fn.custom.command_mode.cmd = function(name, help)
-    return function(fn)
-      xplr.fn.custom.command_mode.fn[name] = fn
-      COMMANDS[name] = { help = help, fn = fn, silent = false }
-    end
-  end
-
-  -- Define a silent command
-  xplr.fn.custom.command_mode.silent_cmd = function(name, help)
-    return function(fn)
-      xplr.fn.custom.command_mode.fn[name] = fn
-      COMMANDS[name] = { help = help, fn = fn, silent = true }
-    end
-  end
+  xplr.fn.custom.command_mode = {
+    map = map,
+    cmd = cmd,
+    silent_cmd = silent_cmd,
+    fn = {},
+  }
 
   xplr.fn.custom.command_mode.execute = function(app)
     local name = app.input_buffer
@@ -202,27 +226,6 @@ local function setup(args)
       }
     end
   end
-
-  xplr.fn.custom.command_mode.map = function(mode, key, name)
-    local cmd = COMMANDS[name]
-    if cmd then
-      local messages = { "PopMode" }
-
-      if cmd.silent then
-        table.insert(
-          messages,
-          { CallLuaSilently = "custom.command_mode.fn." .. name }
-        )
-      else
-        table.insert(messages, { CallLua = "custom.command_mode.fn." .. name })
-      end
-
-      xplr.config.modes.builtin[mode].key_bindings.on_key[key] = {
-        help = cmd.help,
-        messages = messages,
-      }
-    end
-  end
 end
 
-return { setup = setup }
+return { setup = setup, cmd = cmd, silent_cmd = silent_cmd, map = map }

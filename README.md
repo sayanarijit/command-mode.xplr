@@ -59,12 +59,10 @@ Examples are taken from [here](https://arijitbasu.in/xplr/en/message.html#exampl
 ```lua
 -- Assuming you have installed and setup the plugin
 
-local cmd = xplr.fn.custom.command_mode.cmd
-local silent_cmd = xplr.fn.custom.command_mode.silent_cmd
-local map = xplr.fn.custom.command_mode.map
+local m = require("command-mode")
 
 -- Type `:hello-lua` and press enter to know your location
-cmd("hello-lua", "Enter name and know location")(function(app)
+m.cmd("hello-lua", "Enter name and know location")(function(app)
   print("What's your name?")
 
   local name = io.read()
@@ -77,7 +75,7 @@ cmd("hello-lua", "Enter name and know location")(function(app)
 end)
 
 -- Type `:hello-bash` and press enter to know your location
-silent_cmd("hello-bash", "Enter name and know location")(function(app)
+m.silent_cmd("hello-bash", "Enter name and know location")(function(app)
   return {
     {
       BashExec = [===[
@@ -94,10 +92,10 @@ silent_cmd("hello-bash", "Enter name and know location")(function(app)
 end)
 
 -- map `h` to command `hello-lua`
-map("default", "h", "hello-lua")
+m.map("default", "h", "hello-lua")
 
 -- map `H` to command `hello-bash`
-map("default", "H", "hello-bash")
+m.map("default", "H", "hello-bash")
 ```
 
 **NOTE:** To define non-interactive commands, use `xplr.fn.custom.command_mode.silent_cmd` to avoid the flickering of screen.
