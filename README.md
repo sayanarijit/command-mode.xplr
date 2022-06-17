@@ -54,7 +54,7 @@ In short, sometimes, it's much more convenient to define and enter commands to p
 
 ## Usage
 
-Examples are taken from [here](https://arijitbasu.in/xplr/en/message.html#example-using-lua-function-calls) and [here](https://arijitbasu.in/xplr/en/message.html#example-using-environment-variables-and-pipes).
+Examples are taken from [here](https://xplr.dev/en/environment-variables-and-pipes#example-using-environment-variables-and-pipes) and [here](https://xplr.dev/en/lua-function-calls#example-using-lua-function-calls).
 
 ```lua
 -- Assuming you have installed and setup the plugin
