@@ -5,6 +5,16 @@ local xplr = xplr
 local COMMANDS = {}
 local COMMAND_HISTORY = {}
 local CURR_CMD_INDEX = 1
+local MAX_LEN = 0
+
+local function matches_all(str, cmds)
+  for _, p in ipairs(cmds) do
+    if string.sub(p, 1, #str) ~= str then
+      return false
+    end
+  end
+  return true
+end
 
 local function BashExec(script)
   return function(_)
@@ -40,18 +50,24 @@ local function map(mode, key, name)
   end
 end
 
-local function cmd(name, help)
+local function define(name, help, silent)
   return function(fn)
     xplr.fn.custom.command_mode.fn[name] = fn
-    COMMANDS[name] = { help = help, fn = fn, silent = false }
+    COMMANDS[name] = { help = help, fn = fn, silent = silent }
+
+    local len = string.len(name)
+    if len > MAX_LEN then
+      MAX_LEN = len
+    end
   end
 end
 
+local function cmd(name, help)
+  return define(name, help, false)
+end
+
 local function silent_cmd(name, help)
-  return function(fn)
-    xplr.fn.custom.command_mode.fn[name] = fn
-    COMMANDS[name] = { help = help, fn = fn, silent = true }
-  end
+  return define(name, help, true)
 end
 
 local function setup(args)
@@ -71,11 +87,60 @@ local function setup(args)
       "PopMode",
       { SwitchModeCustom = "command_mode" },
       { SetInputBuffer = "" },
+      { SetInputPrompt = ":" },
     },
   }
 
   xplr.config.modes.custom.command_mode = {
     name = "command mode",
+    layout = {
+      Horizontal = {
+        config = {
+          constraints = {
+            { Percentage = 70 },
+            { Percentage = 30 },
+          },
+        },
+        splits = {
+          {
+            Vertical = {
+              config = {
+                constraints = {
+                  { Min = 1 },
+                  { Length = 3 },
+                },
+              },
+              splits = {
+                {
+                  CustomContent = {
+                    title = "Commands",
+                    body = {
+                      DynamicList = { render = "custom.command_mode.render" },
+                    },
+                  },
+                },
+                "InputAndLogs",
+              },
+            },
+          },
+          {
+            Vertical = {
+              config = {
+                constraints = {
+                  { Percentage = 50 },
+                  { Percentage = 50 },
+                },
+              },
+              splits = {
+                "Selection",
+                "HelpMenu",
+              },
+            },
+          },
+        },
+      },
+    },
+
     key_bindings = {
       on_key = {
         enter = {
@@ -159,49 +224,62 @@ local function setup(args)
   end
 
   xplr.fn.custom.command_mode.try_complete = function(app)
-    local input = app.input_buffer or ""
-    local match = nil
+    if not app.input_buffer then
+      return
+    end
+
+    local input = app.input_buffer
+    local found = {}
 
     for name, _ in pairs(COMMANDS) do
-      if string.sub(name, 1, string.len(input)) == input then
-        if match then
-          match = nil
-        else
-          match = name
-        end
+      if string.sub(name, 1, #input) == input then
+        table.insert(found, name)
       end
     end
 
-    if match then
+    local count = #found
+
+    if count == 0 then
+      return
+    elseif count == 1 then
       return {
-        { SetInputBuffer = match },
+        { SetInputBuffer = found[1] },
+      }
+    else
+      local first = found[1]
+      while #first > #input and matches_all(input, found) do
+        input = string.sub(found[1], 1, #input + 1)
+      end
+
+      if matches_all(input, found) then
+        return {
+          { SetInputBuffer = input },
+        }
+      end
+
+      return {
+        { SetInputBuffer = string.sub(input, 1, #input - 1) },
       }
     end
   end
 
   xplr.fn.custom.command_mode.list = function(_)
-    local maxlen = 0
-    for name, _ in pairs(COMMANDS) do
-      local len = string.len(name)
-      if len > maxlen then
-        maxlen = len
-      end
-    end
-
     local text = ""
     for name, command in pairs(COMMANDS) do
       local help = command.help or ""
       text = text .. name
-      for _ = 0, maxlen - string.len(name), 1 do
+      for _ = #name, MAX_LEN, 1 do
         text = text .. " "
       end
 
-      text = text .. "\t" .. help .. "\n"
+      text = text .. " " .. help .. "\n"
     end
 
-    print(text)
-    io.write("[Press ENTER to continue]")
-    _ = io.read()
+    local pager = os.getenv("PAGER") or "less"
+    local p = assert(io.popen(pager, "w"))
+    p:write(text)
+    p:flush()
+    p:close()
   end
 
   xplr.fn.custom.command_mode.prev_command = function(_)
@@ -239,6 +317,37 @@ local function setup(args)
         { SetInputBuffer = command },
       }
     end
+  end
+
+  xplr.fn.custom.command_mode.render = function(ctx)
+    local input = ctx.app.input_buffer or ""
+    local ui = {}
+
+    for name, _ in pairs(COMMANDS) do
+      if string.sub(name, 1, #input) == input then
+        local color = "\x1b[1m"
+
+        if input == name then
+          color = "\x1b[1;7m"
+        end
+
+        local line = color .. " " .. name .. " \x1b[0m"
+
+        for _ = #name, MAX_LEN, 1 do
+          line = line .. " "
+        end
+
+        line = line .. COMMANDS[name].help
+
+        if input == name then
+          line = "\x1b[1;7m" .. line .. "\x1b[0m"
+        end
+
+        table.insert(ui, line)
+      end
+    end
+
+    return ui
   end
 end
 
