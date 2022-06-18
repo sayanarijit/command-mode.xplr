@@ -78,8 +78,8 @@ m.cmd("hello-lua", "Enter name and know location")(function(app)
 end)
 
 -- Type `:hello-bash` and press enter to know your location
-m.silent_cmd("hello-bash", "Enter name and know location")(function(app)
-  return m.BashExec [===[
+m.silent_cmd("hello-bash", "Enter name and know location")(
+  m.BashExec [===[
     echo "What's your name?"
 
     read name
@@ -88,7 +88,7 @@ m.silent_cmd("hello-bash", "Enter name and know location")(function(app)
 
     echo LogSuccess: '"'$message'"' >> "${XPLR_PIPE_MSG_IN:?}"
   ]===]
-end)
+)
 
 -- map `h` to command `hello-lua`
 m.map("default", "h", "hello-lua")

@@ -7,15 +7,19 @@ local COMMAND_HISTORY = {}
 local CURR_CMD_INDEX = 1
 
 local function BashExec(script)
-  return {
-    { BashExec = script },
-  }
+  return function(_)
+    return {
+      { BashExec = script },
+    }
+  end
 end
 
 local function BashExecSilently(script)
-  return {
-    { BashExecSilently = script },
-  }
+  return function(_)
+    return {
+      { BashExecSilently = script },
+    }
+  end
 end
 
 local function map(mode, key, name)
