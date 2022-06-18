@@ -1,3 +1,5 @@
+https://user-images.githubusercontent.com/11632726/174449444-2e13c1d7-7c1b-4dea-a2a8-13f193d8df8d.mp4
+
 # command-mode.xplr
 
 This plugin acts like a library to help you define custom commands to perform
@@ -101,13 +103,10 @@ m.map("default", "H", "hello-bash")
 
 ## Features
 
-- Command completion
+- Tab completion
 - Command history navigation
 - Press `?` to list commands
 - Press `!` to spawn shell
 - Easily map keys to commands
 - Shortcut for `BashExec` and `BashExecSilently` messages.
-
-## TODO
-
-- [ ] Fuzzy search commands
+- Interactive UI
