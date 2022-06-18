@@ -350,6 +350,7 @@ local function setup(args)
     end
 
     table.sort(ui)
+    table.insert(ui, 1, " ")
 
     return ui
   end
