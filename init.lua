@@ -53,7 +53,7 @@ end
 local function define(name, help, silent)
   return function(fn)
     xplr.fn.custom.command_mode.fn[name] = fn
-    COMMANDS[name] = { help = help, fn = fn, silent = silent }
+    COMMANDS[name] = { help = help or "", fn = fn, silent = silent }
 
     local len = string.len(name)
     if len > MAX_LEN then
