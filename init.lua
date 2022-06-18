@@ -264,20 +264,22 @@ local function setup(args)
   end
 
   xplr.fn.custom.command_mode.list = function(_)
-    local text = ""
+    local list = {}
     for name, command in pairs(COMMANDS) do
       local help = command.help or ""
-      text = text .. name
+      local text = name
       for _ = #name, MAX_LEN, 1 do
         text = text .. " "
       end
 
-      text = text .. " " .. help .. "\n"
+      table.insert(list, text .. " " .. help)
     end
+
+    table.sort(list)
 
     local pager = os.getenv("PAGER") or "less"
     local p = assert(io.popen(pager, "w"))
-    p:write(text)
+    p:write(table.concat(list, "\n"))
     p:flush()
     p:close()
   end
@@ -346,6 +348,8 @@ local function setup(args)
         table.insert(ui, line)
       end
     end
+
+    table.sort(ui)
 
     return ui
   end
