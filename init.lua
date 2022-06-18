@@ -6,6 +6,18 @@ local COMMANDS = {}
 local COMMAND_HISTORY = {}
 local CURR_CMD_INDEX = 1
 
+local function BashExec(script)
+  return {
+    { BashExec = script },
+  }
+end
+
+local function BashExecSilently(script)
+  return {
+    { BashExecSilently = script },
+  }
+end
+
 local function map(mode, key, name)
   local cmd = COMMANDS[name]
   if cmd then
@@ -39,8 +51,6 @@ local function silent_cmd(name, help)
 end
 
 local function setup(args)
-  local xplr = xplr
-
   -- Parse args
   args = args or {}
   args.mode = args.mode or "default"
@@ -126,15 +136,15 @@ local function setup(args)
   xplr.fn.custom.command_mode.execute = function(app)
     local name = app.input_buffer
     if name then
-      local cmd = COMMANDS[name]
-      if cmd then
-        if COMMAND_HISTORY[CURR_CMD_INDEX] ~= cmd then
+      local command = COMMANDS[name]
+      if command then
+        if COMMAND_HISTORY[CURR_CMD_INDEX] ~= command then
           table.insert(COMMAND_HISTORY, name)
           CURR_CMD_INDEX = CURR_CMD_INDEX + 1
         end
 
-        if cmd.silent then
-          return cmd.fn(app)
+        if command.silent then
+          return command.fn(app)
         else
           return {
             { CallLua = "custom.command_mode.fn." .. name },
@@ -145,11 +155,11 @@ local function setup(args)
   end
 
   xplr.fn.custom.command_mode.try_complete = function(app)
-    local cmd = app.input_buffer or ""
+    local input = app.input_buffer or ""
     local match = nil
 
     for name, _ in pairs(COMMANDS) do
-      if string.sub(name, 1, string.len(cmd)) == cmd then
+      if string.sub(name, 1, string.len(input)) == input then
         if match then
           match = nil
         else
@@ -175,8 +185,8 @@ local function setup(args)
     end
 
     local text = ""
-    for name, cmd in pairs(COMMANDS) do
-      local help = cmd.help or ""
+    for name, command in pairs(COMMANDS) do
+      local help = command.help or ""
       text = text .. name
       for _ = 0, maxlen - string.len(name), 1 do
         text = text .. " "
@@ -187,7 +197,7 @@ local function setup(args)
 
     print(text)
     io.write("[Press ENTER to continue]")
-    io.read()
+    _ = io.read()
   end
 
   xplr.fn.custom.command_mode.prev_command = function(_)
@@ -198,11 +208,11 @@ local function setup(args)
         CURR_CMD_INDEX = i + 1
       end
     end
-    local cmd = COMMAND_HISTORY[CURR_CMD_INDEX]
+    local command = COMMAND_HISTORY[CURR_CMD_INDEX]
 
-    if cmd then
+    if command then
       return {
-        { SetInputBuffer = cmd },
+        { SetInputBuffer = command },
       }
     end
   end
@@ -219,13 +229,20 @@ local function setup(args)
       CURR_CMD_INDEX = CURR_CMD_INDEX + 1
     end
 
-    local cmd = COMMAND_HISTORY[CURR_CMD_INDEX]
-    if cmd then
+    local command = COMMAND_HISTORY[CURR_CMD_INDEX]
+    if command then
       return {
-        { SetInputBuffer = cmd },
+        { SetInputBuffer = command },
       }
     end
   end
 end
 
-return { setup = setup, cmd = cmd, silent_cmd = silent_cmd, map = map }
+return {
+  setup = setup,
+  cmd = cmd,
+  silent_cmd = silent_cmd,
+  map = map,
+  BashExec = BashExec,
+  BashExecSilently = BashExecSilently,
+}

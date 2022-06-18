@@ -79,19 +79,15 @@ end)
 
 -- Type `:hello-bash` and press enter to know your location
 m.silent_cmd("hello-bash", "Enter name and know location")(function(app)
-  return {
-    {
-      BashExec = [===[
-        echo "What's your name?"
+  return m.BashExec [===[
+    echo "What's your name?"
 
-        read name
-        greeting="Hello $name!"
-        message="$greeting You are inside $PWD"
+    read name
+    greeting="Hello $name!"
+    message="$greeting You are inside $PWD"
 
-        echo LogSuccess: '"'$message'"' >> "${XPLR_PIPE_MSG_IN:?}"
-      ]===],
-    },
-  }
+    echo LogSuccess: '"'$message'"' >> "${XPLR_PIPE_MSG_IN:?}"
+  ]===]
 end)
 
 -- map `h` to command `hello-lua`
@@ -110,6 +106,7 @@ m.map("default", "H", "hello-bash")
 - Press `?` to list commands
 - Press `!` to spawn shell
 - Easily map keys to commands
+- Shortcut for `BashExec` and `BashExecSilently` messages.
 
 ## TODO
 
