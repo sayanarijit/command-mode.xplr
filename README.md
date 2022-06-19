@@ -67,7 +67,7 @@ local m = require("command-mode")
 m.setup()
 
 -- Type `:hello-lua` and press enter to know your location
-m.cmd("hello-lua", "Enter name and know location")(function(app)
+local hello_lua = m.cmd("hello-lua", "Enter name and know location")(function(app)
   print("What's your name?")
 
   local name = io.read()
@@ -80,7 +80,7 @@ m.cmd("hello-lua", "Enter name and know location")(function(app)
 end)
 
 -- Type `:hello-bash` and press enter to know your location
-m.silent_cmd("hello-bash", "Enter name and know location")(
+local hello_bash = m.silent_cmd("hello-bash", "Enter name and know location")(
   m.BashExec [===[
     echo "What's your name?"
 
@@ -93,10 +93,10 @@ m.silent_cmd("hello-bash", "Enter name and know location")(
 )
 
 -- map `h` to command `hello-lua`
-m.map("default", "h", "hello-lua")
+xplr.config.modes.builtin.default.key_bindings.on_key.h = hello_lua.action
 
 -- map `H` to command `hello-bash`
-m.map("default", "H", "hello-bash")
+xplr.config.modes.builtin.default.key_bindings.on_key.H = hello_bash.action
 ```
 
 **NOTE:** To define non-interactive commands, use `silent_cmd` to avoid the flickering of screen.

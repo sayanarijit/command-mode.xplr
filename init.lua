@@ -32,6 +32,7 @@ local function BashExecSilently(script)
   end
 end
 
+-- !to be deprecated! --
 local function map(mode, key, name)
   local cmd = COMMANDS[name]
   if cmd then
@@ -49,16 +50,39 @@ local function map(mode, key, name)
     }
   end
 end
+-- !to be deprecated! --
 
 local function define(name, help, silent)
-  return function(fn)
-    xplr.fn.custom.command_mode.fn[name] = fn
-    COMMANDS[name] = { help = help or "", fn = fn, silent = silent }
+  return function(func)
+    xplr.fn.custom.command_mode.fn[name] = func
+    COMMANDS[name] = { help = help or "", fn = func, silent = silent }
 
     local len = string.len(name)
     if len > MAX_LEN then
       MAX_LEN = len
     end
+
+    local messages = { "PopMode" }
+
+    local fn_name = "custom.command_mode.fn." .. name
+
+    if silent then
+      table.insert(messages, { CallLuaSilently = fn_name })
+    else
+      table.insert(messages, { CallLua = fn_name })
+    end
+
+    return {
+      cmd = COMMANDS[name],
+      fn = {
+        name = fn_name,
+        call = func,
+      },
+      action = {
+        help = help,
+        messages = messages,
+      },
+    }
   end
 end
 
