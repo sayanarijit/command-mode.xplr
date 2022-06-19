@@ -92,10 +92,10 @@ local hello_bash = m.silent_cmd("hello-bash", "Enter name and know location")(
   ]===]
 )
 
--- Bind `hello-lua` to key `H`
+-- Bind `:hello-lua` to key `h`
 xplr.config.modes.builtin.default.key_bindings.on_key.h = hello_lua.action
 
--- Bind `hello-bash` to key `h`
+-- Bind `:hello-bash` to key `H`
 xplr.config.modes.builtin.default.key_bindings.on_key.H = hello_bash.action
 ```
 
