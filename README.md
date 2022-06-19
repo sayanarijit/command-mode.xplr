@@ -93,10 +93,10 @@ local hello_bash = m.silent_cmd("hello-bash", "Enter name and know location")(
 )
 
 -- Bind `:hello-lua` to key `h`
-xplr.config.modes.builtin.default.key_bindings.on_key.h = hello_lua.action
+hello_lua.bind("default", "h")
 
 -- Bind `:hello-bash` to key `H`
-xplr.config.modes.builtin.default.key_bindings.on_key.H = hello_bash.action
+hello_bash.bind(xplr.config.modes.builtin.default, "H")
 ```
 
 **NOTE:** To define non-interactive commands, use `silent_cmd` to avoid the flickering of screen.

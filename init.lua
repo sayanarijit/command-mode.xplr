@@ -82,6 +82,16 @@ local function define(name, help, silent)
         help = help,
         messages = messages,
       },
+      bind = function(mode, key)
+        if type(mode) == "string" then
+          mode = xplr.config.modes.builtin[mode]
+        end
+
+        mode.key_bindings.on_key[key] = {
+          help = help,
+          messages = messages,
+        }
+      end,
     }
   end
 end
