@@ -88,7 +88,7 @@ local hello_bash = m.silent_cmd("hello-bash", "Enter name and know location")(
     greeting="Hello $name!"
     message="$greeting You are inside $PWD"
 
-    echo LogSuccess: '"'$message'"' >> "${XPLR_PIPE_MSG_IN:?}"
+    "$XPLR" -m "LogSuccess: %q" "$message"
   ]===]
 )
 
