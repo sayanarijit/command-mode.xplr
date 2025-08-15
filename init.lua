@@ -180,8 +180,8 @@ local function setup(args)
         enter = {
           help = "execute",
           messages = {
-            { CallLuaSilently = "custom.command_mode.execute" },
             "PopMode",
+            { CallLuaSilently = "custom.command_mode.execute" },
           },
         },
         esc = {
@@ -209,9 +209,9 @@ local function setup(args)
         ["!"] = {
           help = "shell",
           messages = {
+            "PopMode",
             { Call = { command = "bash", args = { "-i" } } },
             "ExplorePwdAsync",
-            "PopMode",
           },
         },
         ["?"] = {
