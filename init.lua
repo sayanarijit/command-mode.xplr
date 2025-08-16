@@ -73,10 +73,16 @@ local function define(name, help, silent)
 
     local messages
 
-	if pop_first then
-      messages = { "PopMode", call }
+    if pop_first then
+      messages = {
+        { CallLuaSilently = "custom.command_mode.pop_mode" },
+        call
+      }
     else
-      messages = { call, "PopMode" }
+      messages = {
+        call,
+        { CallLuaSilently = "custom.command_mode.pop_mode" }
+      }
     end
 
     COMMANDS[name] = {
@@ -246,6 +252,8 @@ local function setup(args)
   xplr.fn.custom.command_mode = {
     map = map,
     cmd = cmd,
+	-- see https://github.com/sayanarijit/xplr/issues/755 for why this is necessary
+    pop_mode = function(_) return { "PopMode" } end,
     silent_cmd = silent_cmd,
     fn = {},
   }
