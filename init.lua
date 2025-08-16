@@ -55,7 +55,6 @@ end
 local function define(name, help, silent)
   return function(func)
     xplr.fn.custom.command_mode.fn[name] = func
-    COMMANDS[name] = { help = help or "", fn = func, silent = silent }
 
     local len = string.len(name)
     if len > MAX_LEN then
@@ -71,6 +70,14 @@ local function define(name, help, silent)
     else
       table.insert(messages, { CallLua = fn_name })
     end
+
+	COMMANDS[name] = {
+		help = help or "",
+		fn = func,
+		-- keeping field in case there is some config that relies on it
+		silent = silent,
+		messages = messages
+	}
 
     return {
       cmd = COMMANDS[name],
@@ -180,8 +187,7 @@ local function setup(args)
         enter = {
           help = "execute",
           messages = {
-            { CallLuaSilently = "custom.command_mode.execute" },
-            "PopMode",
+            { CallLuaSilently = "custom.command_mode.execute" }
           },
         },
         esc = {
@@ -246,13 +252,7 @@ local function setup(args)
           CURR_CMD_INDEX = CURR_CMD_INDEX + 1
         end
 
-        if command.silent then
-          return command.fn(app)
-        else
-          return {
-            { CallLua = "custom.command_mode.fn." .. name },
-          }
-        end
+        return command.messages
       end
     end
   end
