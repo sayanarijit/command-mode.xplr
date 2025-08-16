@@ -53,7 +53,7 @@ end
 -- !to be deprecated! --
 
 local function define(name, help, silent)
-  return function(func)
+  return function(func, pop_first)
     xplr.fn.custom.command_mode.fn[name] = func
 
     local len = string.len(name)
@@ -61,23 +61,31 @@ local function define(name, help, silent)
       MAX_LEN = len
     end
 
-    local messages = { "PopMode" }
-
     local fn_name = "custom.command_mode.fn." .. name
 
+    local call
+
     if silent then
-      table.insert(messages, { CallLuaSilently = fn_name })
+      call = { CallLuaSilently = fn_name }
     else
-      table.insert(messages, { CallLua = fn_name })
+      call = { CallLua = fn_name }
     end
 
-	COMMANDS[name] = {
-		help = help or "",
-		fn = func,
-		-- keeping field in case there is some config that relies on it
-		silent = silent,
-		messages = messages
-	}
+    local messages
+
+	if pop_first then
+      messages = { "PopMode", call }
+    else
+      messages = { call, "PopMode" }
+    end
+
+    COMMANDS[name] = {
+      help = help or "",
+      fn = func,
+      -- keeping field in case there is some config that relies on it
+      silent = silent,
+      messages = messages
+    }
 
     return {
       cmd = COMMANDS[name],
