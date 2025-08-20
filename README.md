@@ -103,6 +103,22 @@ hello_bash.bind(xplr.config.modes.builtin.default, "H")
 
 **NOTE:** To define non-interactive commands, use `silent_cmd` to avoid the flickering of screen.
 
+For `cmd` and `silent_cmd` the mode `command-mode` is removed after the execution of the
+command.  There are also `cmd_pop_first` and `silent_cmd_pop_first` which leave the command
+mode first, to allow for commands relying on the underlying mode and for mode-switching.
+
+There is also a function provided `args_cmd` which takes named arguments to control these
+behaviors.  It defaults to not silent and pop after.
+
+```lua
+m.args_cmd{
+  "name",
+  "short description",
+  silent = true,
+  pop_first = true
+}
+```
+
 ## Features
 
 - Tab completion
