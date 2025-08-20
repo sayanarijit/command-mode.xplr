@@ -52,8 +52,8 @@ local function map(mode, key, name)
 end
 -- !to be deprecated! --
 
-local function define(name, help, silent)
-  return function(func, pop_first)
+local function define(name, help, silent, pop_first)
+  return function(func)
     xplr.fn.custom.command_mode.fn[name] = func
 
     local len = string.len(name)
@@ -117,12 +117,24 @@ local function define(name, help, silent)
   end
 end
 
+local function args_cmd(args)
+	return define(args[1], args[2], args.silent, args.pop_first)
+end
+
 local function cmd(name, help)
-  return define(name, help, false)
+  return define(name, help, false, false)
 end
 
 local function silent_cmd(name, help)
-  return define(name, help, true)
+  return define(name, help, true, false)
+end
+
+local function cmd_pop_first(name, help)
+  return define(name, help, false, true)
+end
+
+local function silent_cmd_pop_first(name, help)
+  return define(name, help, true, true)
 end
 
 local function setup(args)
@@ -410,6 +422,9 @@ return {
   setup = setup,
   cmd = cmd,
   silent_cmd = silent_cmd,
+  cmd_pop_first = cmd_pop_first,
+  silent_cmd_pop_first = silent_cmd_pop_first,
+  args_cmd = args_cmd,
   map = map,
   BashExec = BashExec,
   BashExecSilently = BashExecSilently,
